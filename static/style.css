@@ -19,11 +19,9 @@ body {
 }
 
 header {
-    background: #FEFCFA;
     color: #2d3748;
     padding: 3rem 0;
     margin-bottom: 3rem;
-    border-bottom: 1px solid #F0EDE8;
     text-align: center;
 }
 
@@ -38,7 +36,6 @@ header h1 {
     text-align: center;
     margin-bottom: 4rem;
     padding: 3rem 2rem;
-    background: #FEFCFA;
 }
 
 .hero h2 {
