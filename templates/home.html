@@ -1,0 +1,40 @@
+{{define "content"}}
+<div class="hero">
+  <h2>Wanyen Ice Cream Recipes</h2>
+  <p>Discover and create amazing homemade ice cream flavors</p>
+  <button
+    class="btn btn-primary"
+    hx-get="/add-recipe"
+    hx-target="#recipe-modal"
+    hx-trigger="click"
+  >
+    ➕ Add New Recipe
+  </button>
+</div>
+
+<div id="recipe-list" class="recipe-grid">
+  {{range .Recipes}}
+  <div class="recipe-card">
+    <h3>{{.Name}}</h3>
+    <p><strong>Prep Time:</strong> {{.PrepTime}} minutes</p>
+    <p><strong>Ingredients:</strong></p>
+    <ul>
+      {{$ingredients := split .Ingredients "\n"}} {{range $ingredients}} {{if
+      .}}
+      <li>{{.}}</li>
+      {{end}} {{end}}
+    </ul>
+    <button
+      hx-get="/recipe/{{.ID}}"
+      hx-target="#recipe-detail"
+      class="btn btn-primary"
+    >
+      View Details
+    </button>
+  </div>
+  {{end}}
+</div>
+
+<div id="recipe-modal" class="modal"></div>
+<div id="recipe-detail" class="modal"></div>
+{{end}}
