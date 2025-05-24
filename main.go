@@ -2,7 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"embed"
 	"html/template"
+	"io/fs"
 	"log"
 	"net/http"
 	"strconv"
@@ -11,6 +13,12 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 )
+
+//go:embed templates/*.html
+var templateFS embed.FS
+
+//go:embed static/*
+var staticFS embed.FS
 
 type Recipe struct {
 	ID           int       `json:"id"`
@@ -149,7 +157,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	funcMap := template.FuncMap{
 		"split": strings.Split,
 	}
-	tmpl := template.Must(template.New("").Funcs(funcMap).ParseFiles("templates/base.html", "templates/home.html"))
+	tmpl := template.Must(template.New("").Funcs(funcMap).ParseFS(templateFS, "templates/base.html", "templates/home.html"))
 	
 	recipes, err := getAllRecipes()
 	if err != nil {
@@ -172,7 +180,12 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func staticHandler(w http.ResponseWriter, r *http.Request) {
-	http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))).ServeHTTP(w, r)
+	staticSubFS, err := fs.Sub(staticFS, "static")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.StripPrefix("/static/", http.FileServer(http.FS(staticSubFS))).ServeHTTP(w, r)
 }
 
 func recipeDetailHandler(w http.ResponseWriter, r *http.Request) {

@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Windows executables
+*.exe
+
+# Go executables
+icecream-app
+
+# Database files
+recipes.db
